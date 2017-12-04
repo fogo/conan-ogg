@@ -71,6 +71,10 @@ class OggConan(ConanFile):
             dst="include/ogg",
             src="{basedir}/include/ogg".format(basedir=self.ZIP_FOLDER_NAME))
         self.copy(
+            "*.h",
+            dst="include/ogg",
+            src="{basedir}/_build/include/ogg".format(basedir=self.ZIP_FOLDER_NAME))
+        self.copy(
             "*.a",
             dst="lib",
             src="{basedir}/_build/src/.libs".format(basedir=self.ZIP_FOLDER_NAME))
