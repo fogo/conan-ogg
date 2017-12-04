@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from conans import ConanFile, tools
+from conans import AutoToolsBuildEnvironment, ConanFile, tools
 from conans.util import files
 import os
 
@@ -51,17 +51,18 @@ class OggConan(ConanFile):
             files.mkdir("_build")
             with tools.chdir("_build"):
                 if not tools.os_info.is_windows:
-                    configure_options = []
-                    if self.options.fPIC:
-                        configure_options.append("CFLAGS='-fPIC'")
-
+                    args = []
                     if self.options.shared:
-                        configure_options.append("--enable-shared=yes --enable-static=no")
+                        args.append("--enable-shared=yes")
+                        args.append("--enable-static=no")
                     else:
-                        configure_options.append("--enable-shared=no --enable-static=yes")
+                        args.append("--enable-shared=no")
+                        args.append("--enable-static=yes")
 
-                    self.run("../configure {}".format(" ".join(configure_options)))
-                    self.run("make")
+                    env_build = AutoToolsBuildEnvironment(self)
+                    env_build.fpic = self.options.fPIC
+                    env_build.configure("..", args=args)
+                    env_build.make()
                 else:
                     raise Exception("TODO: windows")
 
