@@ -37,9 +37,7 @@ class OggConan(ConanFile):
             "http://downloads.xiph.org/releases/ogg/{zip_name}".format(zip_name=zip_name),
             zip_name)
 
-        candidate = tools.sha256sum(zip_name)
-        if candidate != self.checksum:
-            raise Exception("MD5 didn't match ({} != {})".format(candidate, self.checksum))
+        tools.check_sha256(zip_name, self.checksum)
 
         tools.unzip(zip_name)
         os.unlink(zip_name)
