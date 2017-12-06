@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/fogo/conan-ogg.svg)](https://travis-ci.org/fogo/conan-ogg)
+[![Build status](https://ci.appveyor.com/api/projects/status/n3kftilciv1di9kq?svg=true)](https://ci.appveyor.com/project/fogo/conan-ogg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Ogg container format library package
