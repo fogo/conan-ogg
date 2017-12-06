@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from conans import AutoToolsBuildEnvironment, ConanFile, tools
+from __future__ import print_function
+from conans import AutoToolsBuildEnvironment, ConanFile, tools, VisualStudioBuildEnvironment
 from conans.util import files
 import os
 
@@ -62,25 +63,53 @@ class OggConan(ConanFile):
                     env_build.configure("..", args=args)
                     env_build.make()
                 else:
-                    raise Exception("TODO: windows")
+                    env_build = VisualStudioBuildEnvironment(self)
+                    env_build.include_paths.append("../include")
+                    with tools.environment_append(env_build.vars):
+                        name = "libogg_{}".format("dynamic" if self.options.shared else "static")
+                        target = "libogg" if self.options.shared else name
+                        msbuild = tools.msvc_build_command(
+                            self.settings, 
+                            r"..\win32\VS2015\{}.sln".format(name), 
+                            targets=[target], 
+                            arch="Win32" if self.settings.arch == "x86" else "x64", 
+                            upgrade_project=True)
+                        # TODO: msvc_build_command arch arg seems to have no effect!
+                        msbuild += " /p:Platform={}".format("Win32" if self.settings.arch == "x86" else "x64")
+                        command = "{vcvars} && {msbuild}".format(
+                            vcvars=tools.vcvars_command(self.settings), 
+                            msbuild=msbuild)
+                        self.run(command)
 
     def package(self):
         self.copy(
             "*.h",
             dst="include/ogg",
             src="{basedir}/include/ogg".format(basedir=self.ZIP_FOLDER_NAME))
-        self.copy(
-            "*.h",
-            dst="include/ogg",
-            src="{basedir}/_build/include/ogg".format(basedir=self.ZIP_FOLDER_NAME))
-        self.copy(
-            "*.a",
-            dst="lib",
-            src="{basedir}/_build/src/.libs".format(basedir=self.ZIP_FOLDER_NAME))
-        self.copy(
-            "*.so",
-            dst="lib",
-            src="{basedir}/_build/src/.libs".format(basedir=self.ZIP_FOLDER_NAME))
+        if not tools.os_info.is_windows:
+            self.copy(
+                "*.h",
+                dst="include/ogg",
+                src="{basedir}/_build/include/ogg".format(basedir=self.ZIP_FOLDER_NAME))
+            self.copy(
+                "*.a",
+                dst="lib",
+                src="{basedir}/_build/src/.libs".format(basedir=self.ZIP_FOLDER_NAME))
+            self.copy(
+                "*.so",
+                dst="lib",
+                src="{basedir}/_build/src/.libs".format(basedir=self.ZIP_FOLDER_NAME))
+        else:            
+            self.copy(
+                "*.dll",
+                dst="lib",
+                src="{basedir}/win32/".format(basedir=self.ZIP_FOLDER_NAME),
+                keep_path=False)
+            self.copy(
+                "*.lib",
+                dst="lib",
+                src="{basedir}/win32/".format(basedir=self.ZIP_FOLDER_NAME),
+                keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
