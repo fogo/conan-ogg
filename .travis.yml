@@ -32,8 +32,8 @@ matrix:
         env: CONAN_APPLE_CLANG_VERSIONS=8.1
 
 install:
-  - pip install conan_package_tools
+  - ./.travis/install.sh
 
 script:
   - export CONAN_USERNAME=fogo
-  - python build.py
+  - ./.travis/run.sh
