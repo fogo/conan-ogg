@@ -6,8 +6,6 @@
 
 [Conan.io](https://conan.io) package for [Ogg container format library](https://www.xiph.org/ogg/)
 
-The packages generated with this **conanfile** can be found in [Bintray](TODO).
-
 ## Build packages
 
 Download conan client from [Conan.io](https://conan.io) and run:
