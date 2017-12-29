@@ -6,6 +6,8 @@
 
 [Conan.io](https://conan.io) package for [Ogg container format library](https://www.xiph.org/ogg/)
 
+The packages generated with this conanfile can be found in [Bintray](https://bintray.com/fogofogo/ogg/ogg%3Afogofogo).
+
 ## Build packages
 
 Download conan client from [Conan.io](https://conan.io) and run:
@@ -16,20 +18,20 @@ If your are in Windows you should run it from a VisualStudio console in order to
 
 ## Upload packages to server
 
-    $ conan upload ogg/1.3.3@fogo/stable --all
+    $ conan upload ogg/1.3.3@fogofogo/stable --all
 
 ## Reuse the packages
 
 ### Basic setup
 
-    $ conan install ogg/1.3.3@fogo/stable
+    $ conan install ogg/1.3.3@fogofogo/stable
 
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
 
     [requires]
-    ogg/1.3.3@fogo/stable
+    ogg/1.3.3@fogofogo/stable
 
     [options]
     ogg:shared=True # False by default
